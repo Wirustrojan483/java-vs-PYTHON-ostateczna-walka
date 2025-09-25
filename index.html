@@ -63,7 +63,7 @@
     .choose { background: #9b59b6; color: white; }
     .log {
       margin-top: 20px;
-      height: 100px;
+      height: 120px;
       overflow-y: auto;
       background: rgba(255,255,255,0.05);
       border-radius: 8px;
@@ -116,7 +116,7 @@
 
     function updateBars() {
       document.getElementById("javaHP").style.width = javaHP + "%";
-      document.getElementById("pythonHP").style.width = pythonHP / 1.5 + "%"; 
+      document.getElementById("pythonHP").style.width = (pythonHP / 1.5) + "%"; 
     }
 
     function log(text) {
@@ -131,7 +131,6 @@
       document.querySelector(".arena").style.display = "flex";
       document.querySelector(".controls").style.display = "block";
       document.querySelector(".log").style.display = "block";
-      
       updateBars();
     }
 
@@ -139,70 +138,64 @@
       if (gameOver) return;
 
       if (player === "java") {
-        // Java atakuje Pythona
         let dmgToPython = Math.floor(Math.random() * 10) + 5; 
         pythonHP -= dmgToPython;
         if (pythonHP < 0) pythonHP = 0;
         updateBars();
-        
+        log("Java atakuje Pythona za " + dmgToPython + "!");
       } else {
-        // Python atakuje Javę
         let dmgToJava = Math.floor(Math.random() * 20) + 15; 
         javaHP -= dmgToJava;
         if (javaHP < 0) javaHP = 0;
         updateBars();
-        
+        log("Python atakuje Javę za " + dmgToJava + "!");
       }
 
       if (javaHP <= 0 || pythonHP <= 0) {
-        endGame();
+        if (javaHP <= 0) endGame("python");
+        else endGame("java");
         return;
       }
+
+      // kontratak przeciwnika po 1s
       if (player === "java") {
         setTimeout(() => {
-        let dmgToJava = Math.floor(Math.random() * 20) + 5; 
-        javaHP -= dmgToJava;
-        if (javaHP < 0) javaHP = 0;
-        updateBars();
-        }, 1000)
-        
-        if (pythonHP <= 0) {
-          endGame2();
-        }
-        if (javaHP <= 0) {
-          endGame();
-        }
-      }
-      
-      if (player === "python") {
+          let dmgToJava = Math.floor(Math.random() * 20) + 5; 
+          javaHP -= dmgToJava;
+          if (javaHP < 0) javaHP = 0;
+          updateBars();
+          log("Python kontratakuje Javę za " + dmgToJava + "!");
+          if (javaHP <= 0) endGame("python");
+        }, 1000);
+      } else {
         setTimeout(() => {
-        let dmgToJava = Math.floor(Math.random() * 20) + 15; 
-        javaHP -= dmgToJava;
-        if (javaHP < 0) javaHP = 0;
-        updateBars();
-        }, 1000)
-        
-        if (pythonHP <= 0) {
-          endGame2();
-        }
-        if (javaHP <= 0) {
-          endGame();
-        }
+          let dmgToPython = Math.floor(Math.random() * 10) + 5; 
+          pythonHP -= dmgToPython;
+          if (pythonHP < 0) pythonHP = 0;
+          updateBars();
+          log("Java kontratakuje Pythona za " + dmgToPython + "!");
+          if (pythonHP <= 0) endGame("java");
+        }, 1000);
       }
-          
-    function endGame() {
-      gameOver = true;
-      log("<b>PYTHON WYGRYWA! java nie miała szans!</b>");
-      document.querySelector(".attack").style.display = "none";
     }
-    function endGame2() {
+
+    function endGame(winner) {
       gameOver = true;
-      log("<b>java wygrywa? Ale...!</b>");
       document.querySelector(".attack").style.display = "none";
-      (let dmgToJava = 9999; 1000)
-      log("<b>Nie! PYTHON nigdy nie przegra!</b>");
+      if (winner === "python") {
+        log("<b>PYTHON WYGRYWA! Java nie miała szans!</b>");
+      } else {
+        log("<b>Java WYGRYWA! Ale czy na pewno...?</b>");
+        // efekt "Python nigdy nie przegra!"
+        setTimeout(() => {
+          javaHP = 0;
+          updateBars();
+          log("<b>Nie! PYTHON nigdy nie przegra!</b>");
+        }, 2000);
+      }
     }
   </script>
 </body>
 </html>
+
 
