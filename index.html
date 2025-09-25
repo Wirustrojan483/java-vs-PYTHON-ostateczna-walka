@@ -172,8 +172,9 @@
         if (javaHP <= 0) {
           endGame();
         }
+      }
       
-        if (player === "python") {
+      if (player === "python") {
         setTimeout(() => {
         let dmgToJava = Math.floor(Math.random() * 20) + 15; 
         javaHP -= dmgToJava;
@@ -187,6 +188,7 @@
         if (javaHP <= 0) {
           endGame();
         }
+      }
           
     function endGame() {
       gameOver = true;
@@ -197,7 +199,7 @@
       gameOver = true;
       log("<b>java wygrywa? Ale...!</b>");
       document.querySelector(".attack").style.display = "none";
-      let dmgToJava = 9999; 1000
+      (let dmgToJava = 9999; 1000)
       log("<b>Nie! PYTHON nigdy nie przegra!</b>");
     }
   </script>
