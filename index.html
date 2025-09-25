@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <title>Python vs Java</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #0d0d0d, #1e1e1e);
+      color: #fff;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    h1 { padding: 20px; }
+    .arena {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin-top: 40px;
+    }
+    .character {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 200px;
+    }
+    .sprite {
+      font-size: 80px;
+      margin-bottom: 10px;
+    }
+    .hp-bar {
+      width: 180px;
+      height: 20px;
+      background: #333;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    .hp-fill {
+      height: 100%;
+      background: #4caf50;
+      width: 100%;
+      transition: width 0.5s;
+    }
+    .java .hp-fill { background: #e67e22; }
+    .python .hp-fill { background: #4caf50; }
+    .controls {
+      margin-top: 30px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    button:hover { transform: scale(1.05); }
+    .attack { background: #3498db; color: white; }
+    .restart { background: #2ecc71; color: white; display: none; }
+    .log {
+      margin-top: 20px;
+      height: 100px;
+      overflow-y: auto;
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      padding: 10px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <h1>Python 🐍 vs ☕ Java</h1>
+
+  <div class="arena">
+    <div class="character java">
+      <div class="sprite">☕</div>
+      <div class="hp-bar"><div class="hp-fill" id="javaHP"></div></div>
+      <p>Java</p>
+    </div>
+
+    <div class="character python">
+      <div class="sprite">🐍</div>
+      <div class="hp-bar"><div class="hp-fill" id="pythonHP"></div></div>
+      <p>Python</p>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="attack" onclick="playerAttack()">Atakuj!</button>
+    <button class="restart" onclick="restartGame()" id="restartBtn">Zagraj ponownie</button>
+  </div>
+
+  <div class="log" id="log"></div>
+
+  <script>
+    let javaHP = 100;
+    let pythonHP = 150; // Python ma więcej życia
+    let gameOver = false;
+
+    function updateBars() {
+      document.getElementById("javaHP").style.width = javaHP + "%";
+      document.getElementById("pythonHP").style.width = pythonHP / 1.5 + "%"; 
+    }
+
+    function log(text) {
+      const logBox = document.getElementById("log");
+      logBox.innerHTML += text + "<br>";
+      logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    function playerAttack() {
+      if (gameOver) return;
+
+      // Gracz uderza przeciwnika
+      let dmgToPython = Math.floor(Math.random() * 10) + 5; // 5-15 obrażeń
+      pythonHP -= dmgToPython;
+      if (pythonHP < 0) pythonHP = 0;
+      updateBars();
+      log("☕ Java zadaje " + dmgToPython + " obrażeń Pythonowi!");
+
+      if (pythonHP <= 0) {
+        endGame("🐍 Python wstaje silniejszy i pokonuje Javę mimo wszystko!");
+        return;
+      }
+
+      // Python kontratakuje (dużo mocniejszy)
+      setTimeout(() => {
+        let dmgToJava = Math.floor(Math.random() * 20) + 15; // 15-35 obrażeń
+        javaHP -= dmgToJava;
+        if (javaHP < 0) javaHP = 0;
+        updateBars();
+        log("🐍 Python kontratakuje i zadaje " + dmgToJava + " obrażeń Javie!");
+
+        if (javaHP <= 0) {
+          endGame("🐍 Python WYGRYWA! Java nie miała szans!");
+        }
+      }, 1000);
+    }
+
+    function endGame(msg) {
+      gameOver = true;
+      log("<b>" + msg + "</b>");
+      document.querySelector(".attack").style.display = "none";
+      document.getElementById("restartBtn").style.display = "inline-block";
+    }
+
+    function restartGame() {
+      javaHP = 100;
+      pythonHP = 150;
+      gameOver = false;
+      updateBars();
+      document.getElementById("log").innerHTML = "";
+      document.querySelector(".attack").style.display = "inline-block";
+      document.getElementById("restartBtn").style.display = "none";
+    }
+
+    updateBars();
+  </script>
+</body>
+</html>
