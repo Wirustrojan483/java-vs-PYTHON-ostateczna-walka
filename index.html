@@ -76,13 +76,13 @@
   </style>
 </head>
 <body>
-  <h1>Python 🐍 vs ☕ Java</h1>
+  <h1>Python vs Java</h1>
 
   <!-- Ekran wyboru -->
   <div id="chooseScreen">
     <h2>Wybierz swoją postać:</h2>
-    <button class="choose" onclick="startGame('java')">☕ Java</button>
-    <button class="choose" onclick="startGame('python')">🐍 Python</button>
+    <button class="choose" onclick="startGame('java')">java</button>
+    <button class="choose" onclick="startGame('python')">PYTHON</button>
   </div>
 
   <!-- Arena -->
@@ -131,7 +131,7 @@
       document.querySelector(".arena").style.display = "flex";
       document.querySelector(".controls").style.display = "block";
       document.querySelector(".log").style.display = "block";
-      log("Wybrałeś: " + (player === "java" ? "☕ Java" : "🐍 Python"));
+      
       updateBars();
     }
 
@@ -144,14 +144,14 @@
         pythonHP -= dmgToPython;
         if (pythonHP < 0) pythonHP = 0;
         updateBars();
-        log("☕ Java zadaje " + dmgToPython + " obrażeń Pythonowi!");
+        
       } else {
         // Python atakuje Javę
         let dmgToJava = Math.floor(Math.random() * 20) + 15; 
         javaHP -= dmgToJava;
         if (javaHP < 0) javaHP = 0;
         updateBars();
-        log("🐍 Python zadaje " + dmgToJava + " obrażeń Javie!");
+        
       }
 
       if (javaHP <= 0 || pythonHP <= 0) {
@@ -165,8 +165,7 @@
         javaHP -= dmgToJava;
         if (javaHP < 0) javaHP = 0;
         updateBars();
-        log("🐍 Python kontratakuje i zadaje " + dmgToJava + " obrażeń Javie!");
-
+        
         if (javaHP <= 0) {
           endGame();
         }
@@ -175,7 +174,7 @@
 
     function endGame() {
       gameOver = true;
-      log("<b>🐍 Python WYGRYWA! Java nie miała szans!</b>");
+      log("<b>PYTHON WYGRYWA! java nie miała szans!</b>");
       document.querySelector(".attack").style.display = "none";
     }
   </script>
