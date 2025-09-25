@@ -13,6 +13,7 @@
       padding: 0;
     }
     h1 { padding: 20px; }
+    .arena, .controls, .log { display: none; }
     .arena {
       display: flex;
       justify-content: space-around;
@@ -59,7 +60,7 @@
     }
     button:hover { transform: scale(1.05); }
     .attack { background: #3498db; color: white; }
-    .restart { background: #2ecc71; color: white; display: none; }
+    .choose { background: #9b59b6; color: white; }
     .log {
       margin-top: 20px;
       height: 100px;
@@ -69,11 +70,22 @@
       padding: 10px;
       text-align: left;
     }
+    #chooseScreen {
+      margin-top: 50px;
+    }
   </style>
 </head>
 <body>
   <h1>Python 🐍 vs ☕ Java</h1>
 
+  <!-- Ekran wyboru -->
+  <div id="chooseScreen">
+    <h2>Wybierz swoją postać:</h2>
+    <button class="choose" onclick="startGame('java')">☕ Java</button>
+    <button class="choose" onclick="startGame('python')">🐍 Python</button>
+  </div>
+
+  <!-- Arena -->
   <div class="arena">
     <div class="character java">
       <div class="sprite">☕</div>
@@ -88,17 +100,19 @@
     </div>
   </div>
 
+  <!-- Sterowanie -->
   <div class="controls">
     <button class="attack" onclick="playerAttack()">Atakuj!</button>
-    <button class="restart" onclick="restartGame()" id="restartBtn">Zagraj ponownie</button>
   </div>
 
+  <!-- Logi walki -->
   <div class="log" id="log"></div>
 
   <script>
     let javaHP = 100;
-    let pythonHP = 150; // Python ma więcej życia
+    let pythonHP = 150;
     let gameOver = false;
+    let player = null;
 
     function updateBars() {
       document.getElementById("javaHP").style.width = javaHP + "%";
@@ -111,53 +125,60 @@
       logBox.scrollTop = logBox.scrollHeight;
     }
 
+    function startGame(choice) {
+      player = choice;
+      document.getElementById("chooseScreen").style.display = "none";
+      document.querySelector(".arena").style.display = "flex";
+      document.querySelector(".controls").style.display = "block";
+      document.querySelector(".log").style.display = "block";
+      log("Wybrałeś: " + (player === "java" ? "☕ Java" : "🐍 Python"));
+      updateBars();
+    }
+
     function playerAttack() {
       if (gameOver) return;
 
-      // Gracz uderza przeciwnika
-      let dmgToPython = Math.floor(Math.random() * 10) + 5; // 5-15 obrażeń
-      pythonHP -= dmgToPython;
-      if (pythonHP < 0) pythonHP = 0;
-      updateBars();
-      log("☕ Java zadaje " + dmgToPython + " obrażeń Pythonowi!");
+      if (player === "java") {
+        // Java atakuje Pythona
+        let dmgToPython = Math.floor(Math.random() * 10) + 5; 
+        pythonHP -= dmgToPython;
+        if (pythonHP < 0) pythonHP = 0;
+        updateBars();
+        log("☕ Java zadaje " + dmgToPython + " obrażeń Pythonowi!");
+      } else {
+        // Python atakuje Javę
+        let dmgToJava = Math.floor(Math.random() * 20) + 15; 
+        javaHP -= dmgToJava;
+        if (javaHP < 0) javaHP = 0;
+        updateBars();
+        log("🐍 Python zadaje " + dmgToJava + " obrażeń Javie!");
+      }
 
-      if (pythonHP <= 0) {
-        endGame("🐍 Python wstaje silniejszy i pokonuje Javę mimo wszystko!");
+      if (javaHP <= 0 || pythonHP <= 0) {
+        endGame();
         return;
       }
 
-      // Python kontratakuje (dużo mocniejszy)
+      // Python zawsze kontratakuje
       setTimeout(() => {
-        let dmgToJava = Math.floor(Math.random() * 20) + 15; // 15-35 obrażeń
+        let dmgToJava = Math.floor(Math.random() * 20) + 15; 
         javaHP -= dmgToJava;
         if (javaHP < 0) javaHP = 0;
         updateBars();
         log("🐍 Python kontratakuje i zadaje " + dmgToJava + " obrażeń Javie!");
 
         if (javaHP <= 0) {
-          endGame("🐍 Python WYGRYWA! Java nie miała szans!");
+          endGame();
         }
       }, 1000);
     }
 
-    function endGame(msg) {
+    function endGame() {
       gameOver = true;
-      log("<b>" + msg + "</b>");
+      log("<b>🐍 Python WYGRYWA! Java nie miała szans!</b>");
       document.querySelector(".attack").style.display = "none";
-      document.getElementById("restartBtn").style.display = "inline-block";
     }
-
-    function restartGame() {
-      javaHP = 100;
-      pythonHP = 150;
-      gameOver = false;
-      updateBars();
-      document.getElementById("log").innerHTML = "";
-      document.querySelector(".attack").style.display = "inline-block";
-      document.getElementById("restartBtn").style.display = "none";
-    }
-
-    updateBars();
   </script>
 </body>
 </html>
+
